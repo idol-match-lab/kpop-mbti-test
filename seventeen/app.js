@@ -457,7 +457,9 @@
   function buildCard(result) {
     var width = 1080;
     var count = result.songs.length;
-    var height = 700 + count * 340;
+    var songStart = 356;
+    var songSpacing = 250;
+    var height = songStart + count * songSpacing + 20;
     var pad = 72;
     var canvas = document.createElement('canvas');
     canvas.width = width;
@@ -491,7 +493,7 @@
     ctx.fillText('推荐体验测试版 · ' + dateText(result.dataAsOf), pad, 256);
     ctx.fillStyle = '#111111';
     line(310);
-    var y = 356;
+    var y = songStart;
     var i;
     for (i = 0; i < result.songs.length; i += 1) {
       var song = result.songs[i];
@@ -511,23 +513,9 @@
       ctx.fillStyle = '#777777';
       ctx.fillText(song.workType + ' / ' + song.version, textX, after + 38);
       ctx.fillStyle = '#111111';
-      y += 350;
+      y += songSpacing;
       line(y - 34);
-      ctx.strokeStyle = '#dddddd';
     }
-    var footer = height - 216;
-    line(footer);
-    ctx.font = font(700, 30);
-    ctx.fillText('SVT / 此刻，听一首', pad, footer + 32);
-    ctx.font = font(400, 22);
-    ctx.fillStyle = '#666666';
-    ctx.fillText('详细答案、情绪标签与兑换信息未显示在这张卡片上。', pad, footer + 86);
-    ctx.fillText('不是心理测评，也不代表对任何人的判断。', pad, footer + 122);
-    var qualityCount = result.songs.filter(function (song) { return song.quality !== 'reviewed'; }).length;
-    if (qualityCount > 0) ctx.fillText('其中 ' + qualityCount + ' 首资料未完善，尚未按情绪标签审校。', pad, footer + 158);
-    ctx.textAlign = 'right';
-    ctx.fillText('推荐体验测试版', width - pad, footer + 122);
-    ctx.textAlign = 'left';
     return canvas.toDataURL('image/png');
   }
 
