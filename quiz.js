@@ -117,7 +117,7 @@ const groups = [...new Set(roster.map(artist => artist.group))].sort((a, b) => a
 const popularGroups = [
   'BIGBANG', '2NE1', 'SHINee', 'Wonder Girls', 'SUPER JUNIOR', 'KARA', '2PM',
   'EXO', 'Red Velvet', 'BTS', 'TWICE', 'SEVENTEEN', 'BLACKPINK',
-  'Stray Kids', 'ITZY', 'TXT', 'aespa', 'ENHYPEN', 'IVE', 'LE SSERAFIM', 'Newjeans',
+  'Stray Kids', 'ITZY', 'TXT', 'aespa', 'ENHYPEN', 'IVE', 'LE SSERAFIM', 'NewJeans',
   'RIIZE', 'BABYMONSTER', 'ZEROBASEONE', 'ILLIT', 'A2O LITE'
 ].filter(group => groups.includes(group));
 
