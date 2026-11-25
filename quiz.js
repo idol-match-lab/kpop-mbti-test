@@ -111,14 +111,14 @@ function directoryButton(label, type, back, { entries, parent = screen } = {}) {
 
 const roster = Object.entries(idols).flatMap(([type, names]) => names.map(entry => {
   const [, name, group] = entry.match(/^(.*?)\s+\((.+)\)$/) || [];
-  return { name: name || entry, group: group || '', type };
+  return { name: name || entry, group: group || '', type, types: type.split(' / ') };
 })).filter(artist => artist.group.trim()).sort((a, b) => a.name.localeCompare(b.name));
 const groups = [...new Set(roster.map(artist => artist.group))].sort((a, b) => a.localeCompare(b));
 const popularGroups = [
   'BIGBANG', '2NE1', 'SHINee', 'Wonder Girls', 'SUPER JUNIOR', 'KARA', '2PM',
   'EXO', 'Red Velvet', 'BTS', 'TWICE', 'SEVENTEEN', 'BLACKPINK',
   'Stray Kids', 'ITZY', 'TXT', 'aespa', 'ENHYPEN', 'IVE', 'LE SSERAFIM', 'Newjeans',
-  'RIIZE', 'BABYMONSTER', 'ZEROBASEONE', 'ILLIT'
+  'RIIZE', 'BABYMONSTER', 'ZEROBASEONE', 'ILLIT', 'A2O LITE'
 ].filter(group => groups.includes(group));
 
 function directory(type, back, entries = roster) {
@@ -126,11 +126,12 @@ function directory(type, back, entries = roster) {
   const search = screen.querySelector('#search');
   const filter = screen.querySelector('#filter');
   const body = screen.querySelector('tbody');
-  Object.keys(idols).sort().forEach(value => filter.add(new Option(value, value)));
+  [...new Set(roster.flatMap(artist => artist.types))].sort()
+    .forEach(value => filter.add(new Option(value, value)));
   filter.value = type;
   function update() {
     const query = search.value.trim().toLowerCase();
-    const matches = entries.filter(artist => (!filter.value || artist.type === filter.value) &&
+    const matches = entries.filter(artist => (!filter.value || artist.types.includes(filter.value)) &&
       (artist.name.toLowerCase().includes(query) || artist.group.toLowerCase().includes(query)));
     body.replaceChildren();
     matches.forEach(artist => {
@@ -179,7 +180,8 @@ function findMatches(type) {
   const candidates = roster.filter(artist => !selectedGroups.size || selectedGroups.has(artist.group));
   const scored = candidates.map(artist => ({
     artist,
-    similarity: [...type].filter((letter, i) => letter === artist.type[i]).length
+    similarity: Math.max(...artist.types.map(candidate =>
+      [...type].filter((letter, i) => letter === candidate[i]).length))
   }));
   const similarity = Math.max(...scored.map(entry => entry.similarity));
   return { similarity, matches: scored.filter(entry => entry.similarity === similarity).map(entry => entry.artist) };
